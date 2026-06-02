@@ -1,0 +1,11 @@
+# Normalize line endings to LF on checkout for all text files
+* text=auto eol=lf
+
+# Force binary for compiled/binary assets
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.ico binary
+*.jar binary
+*.keystore binary
