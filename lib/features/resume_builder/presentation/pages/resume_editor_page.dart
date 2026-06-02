@@ -6,9 +6,11 @@ import 'package:go_router/go_router.dart';
 import 'package:resume_riverpod_builder/core/router/route_names.dart';
 import 'package:resume_riverpod_builder/features/resume_builder/domain/entities/resume_entity.dart';
 import 'package:resume_riverpod_builder/features/resume_builder/presentation/providers/resume_provider.dart';
+import 'package:resume_riverpod_builder/features/resume_builder/presentation/widgets/section_certifications.dart';
 import 'package:resume_riverpod_builder/features/resume_builder/presentation/widgets/section_education.dart';
 import 'package:resume_riverpod_builder/features/resume_builder/presentation/widgets/section_experience.dart';
 import 'package:resume_riverpod_builder/features/resume_builder/presentation/widgets/section_personal_info.dart';
+import 'package:resume_riverpod_builder/features/resume_builder/presentation/widgets/section_projects.dart';
 import 'package:resume_riverpod_builder/features/resume_builder/presentation/widgets/section_skills.dart';
 import 'package:resume_riverpod_builder/features/resume_builder/presentation/widgets/section_summary.dart';
 import 'package:resume_riverpod_builder/shared/widgets/app_loading.dart';
@@ -95,6 +97,16 @@ class _EditorScaffold extends ConsumerWidget {
           SectionSkills(
             skillGroups: resume.skillGroups,
             onChanged: (list) => notifier.update(resume.copyWith(skillGroups: list)),
+          ),
+          const Gap(12),
+          SectionProjects(
+            projects: resume.projects,
+            onChanged: (list) => notifier.update(resume.copyWith(projects: list)),
+          ),
+          const Gap(12),
+          SectionCertifications(
+            certifications: resume.certifications,
+            onChanged: (list) => notifier.update(resume.copyWith(certifications: list)),
           ),
           const Gap(80),
         ],
