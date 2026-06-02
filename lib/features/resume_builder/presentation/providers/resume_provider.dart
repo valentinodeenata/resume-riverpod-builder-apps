@@ -12,6 +12,7 @@ import 'package:resume_riverpod_builder/features/resume_builder/domain/entities/
 import 'package:resume_riverpod_builder/features/resume_builder/domain/repositories/resume_repository.dart';
 import 'package:resume_riverpod_builder/features/resume_builder/domain/usecases/create_resume.dart';
 import 'package:resume_riverpod_builder/features/resume_builder/domain/usecases/delete_resume.dart';
+import 'package:resume_riverpod_builder/features/resume_builder/domain/usecases/duplicate_resume.dart';
 import 'package:resume_riverpod_builder/features/resume_builder/domain/usecases/get_resume.dart';
 import 'package:resume_riverpod_builder/features/resume_builder/domain/usecases/save_resume.dart';
 
@@ -45,6 +46,10 @@ CreateResume createResume(Ref ref) =>
 @Riverpod(keepAlive: true)
 DeleteResume deleteResume(Ref ref) =>
     DeleteResume(ref.watch(resumeRepositoryProvider));
+
+@Riverpod(keepAlive: true)
+DuplicateResume duplicateResume(Ref ref) =>
+    DuplicateResume(ref.watch(resumeRepositoryProvider));
 
 // ─── Resume list stream ───────────────────────────────────────────────────────
 

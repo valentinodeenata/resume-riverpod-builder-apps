@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
+
 import 'package:resume_riverpod_builder/core/constants/app_constants.dart';
 import 'package:resume_riverpod_builder/core/router/route_names.dart';
 import 'package:resume_riverpod_builder/core/theme/theme_provider.dart';
@@ -9,6 +10,7 @@ import 'package:resume_riverpod_builder/features/auth/presentation/providers/aut
 import 'package:resume_riverpod_builder/features/resume_builder/domain/entities/resume_entity.dart';
 import 'package:resume_riverpod_builder/features/resume_builder/domain/usecases/create_resume.dart';
 import 'package:resume_riverpod_builder/features/resume_builder/domain/usecases/delete_resume.dart';
+import 'package:resume_riverpod_builder/features/resume_builder/domain/usecases/duplicate_resume.dart';
 import 'package:resume_riverpod_builder/features/resume_builder/presentation/providers/resume_provider.dart';
 import 'package:resume_riverpod_builder/shared/widgets/app_loading.dart';
 import 'package:resume_riverpod_builder/shared/widgets/error_view.dart';
@@ -47,7 +49,9 @@ class DashboardPage extends ConsumerWidget {
           onRetry: () => ref.invalidate(resumeListProvider),
         ),
         data: (resumes) => resumes.isEmpty
-            ? _EmptyState(onCreateTap: () => _createResume(context, ref, user?.id ?? ''))
+            ? _EmptyState(
+                onCreateTap: () => _createResume(context, ref, user?.id ?? ''),
+              )
             : ListView.separated(
                 padding: const EdgeInsets.all(16),
                 itemCount: resumes.length,
@@ -62,6 +66,7 @@ class DashboardPage extends ConsumerWidget {
                     RouteNames.atsAnalyzer,
                     pathParameters: {'resumeId': resumes[i].id},
                   ),
+                  onDuplicate: () => _duplicateResume(context, ref, resumes[i].id),
                   onDelete: () => _confirmDelete(context, ref, resumes[i].id),
                 ),
               ),
@@ -74,7 +79,11 @@ class DashboardPage extends ConsumerWidget {
     );
   }
 
-  Future<void> _createResume(BuildContext context, WidgetRef ref, String userId) async {
+  Future<void> _createResume(
+    BuildContext context,
+    WidgetRef ref,
+    String userId,
+  ) async {
     final titleController = TextEditingController();
 
     final confirmed = await showDialog<bool>(
@@ -84,11 +93,20 @@ class DashboardPage extends ConsumerWidget {
         content: TextField(
           controller: titleController,
           autofocus: true,
-          decoration: const InputDecoration(labelText: 'Resume Title', hintText: 'e.g. Software Engineer'),
+          decoration: const InputDecoration(
+            labelText: 'Resume Title',
+            hintText: 'e.g. Software Engineer',
+          ),
         ),
         actions: [
-          TextButton(onPressed: () => Navigator.pop(context, false), child: const Text('Cancel')),
-          FilledButton(onPressed: () => Navigator.pop(context, true), child: const Text('Create')),
+          TextButton(
+            onPressed: () => Navigator.pop(context, false),
+            child: const Text('Cancel'),
+          ),
+          FilledButton(
+            onPressed: () => Navigator.pop(context, true),
+            child: const Text('Create'),
+          ),
         ],
       ),
     );
@@ -102,24 +120,67 @@ class DashboardPage extends ConsumerWidget {
     if (!context.mounted) return;
 
     result.fold(
-      (f) => ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(f.message)),
+      (f) => ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text(f.message))),
+      (r) => context.pushNamed(
+        RouteNames.resumeEditor,
+        pathParameters: {'resumeId': r.id},
       ),
-      (r) => context.pushNamed(RouteNames.resumeEditor, pathParameters: {'resumeId': r.id}),
     );
   }
 
-  Future<void> _confirmDelete(BuildContext context, WidgetRef ref, String resumeId) async {
+  Future<void> _duplicateResume(
+    BuildContext context,
+    WidgetRef ref,
+    String resumeId,
+  ) async {
+    final result = await ref
+        .read(duplicateResumeProvider)
+        .call(DuplicateResumeParams(resumeId));
+
+    if (!context.mounted) return;
+
+    result.fold(
+      (f) => ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(f.message)),
+      ),
+      (r) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Resume duplicated: ${r.title}'),
+            action: SnackBarAction(
+              label: 'Open',
+              onPressed: () => context.pushNamed(
+                RouteNames.resumeEditor,
+                pathParameters: {'resumeId': r.id},
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  Future<void> _confirmDelete(
+    BuildContext context,
+    WidgetRef ref,
+    String resumeId,
+  ) async {
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (_) => AlertDialog(
         title: const Text('Delete Resume'),
         content: const Text('This action cannot be undone.'),
         actions: [
-          TextButton(onPressed: () => Navigator.pop(context, false), child: const Text('Cancel')),
+          TextButton(
+            onPressed: () => Navigator.pop(context, false),
+            child: const Text('Cancel'),
+          ),
           FilledButton(
             onPressed: () => Navigator.pop(context, true),
-            style: FilledButton.styleFrom(backgroundColor: Theme.of(context).colorScheme.error),
+            style: FilledButton.styleFrom(
+              backgroundColor: Theme.of(context).colorScheme.error,
+            ),
             child: const Text('Delete'),
           ),
         ],
@@ -143,14 +204,20 @@ class _EmptyState extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(Icons.description_outlined, size: 72, color: theme.colorScheme.primary),
+            Icon(
+              Icons.description_outlined,
+              size: 72,
+              color: theme.colorScheme.primary,
+            ),
             const Gap(16),
             Text('No resumes yet', style: theme.textTheme.titleLarge),
             const Gap(8),
             Text(
               'Create your first ATS-optimized resume.',
               textAlign: TextAlign.center,
-              style: theme.textTheme.bodyMedium?.copyWith(color: theme.colorScheme.onSurfaceVariant),
+              style: theme.textTheme.bodyMedium?.copyWith(
+                color: theme.colorScheme.onSurfaceVariant,
+              ),
             ),
             const Gap(24),
             FilledButton.icon(
@@ -170,12 +237,14 @@ class _ResumeCard extends StatelessWidget {
     required this.resume,
     required this.onTap,
     required this.onAnalyze,
+    required this.onDuplicate,
     required this.onDelete,
   });
 
   final ResumeEntity resume;
   final VoidCallback onTap;
   final VoidCallback onAnalyze;
+  final VoidCallback onDuplicate;
   final VoidCallback onDelete;
 
   @override
@@ -183,7 +252,7 @@ class _ResumeCard extends StatelessWidget {
     final theme = Theme.of(context);
     return Card(
       child: ListTile(
-        contentPadding: const EdgeInsets.fromLTRB(16, 8, 8, 8),
+        contentPadding: const EdgeInsets.fromLTRB(16, 8, 4, 8),
         onTap: onTap,
         title: Text(resume.title, style: theme.textTheme.titleMedium),
         subtitle: Text(
@@ -197,6 +266,11 @@ class _ResumeCard extends StatelessWidget {
               icon: const Icon(Icons.analytics_outlined),
               tooltip: 'ATS Analysis',
               onPressed: onAnalyze,
+            ),
+            IconButton(
+              icon: const Icon(Icons.copy_outlined),
+              tooltip: 'Duplicate',
+              onPressed: onDuplicate,
             ),
             IconButton(
               icon: Icon(Icons.delete_outline, color: theme.colorScheme.error),
