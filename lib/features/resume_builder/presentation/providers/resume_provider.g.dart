@@ -122,6 +122,23 @@ final deleteResumeProvider = Provider<DeleteResume>.internal(
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
 typedef DeleteResumeRef = ProviderRef<DeleteResume>;
+String _$duplicateResumeHash() => r'e993f6a08db2d4e65f7cd7610d866c24c9d97b09';
+
+/// See also [duplicateResume].
+@ProviderFor(duplicateResume)
+final duplicateResumeProvider = Provider<DuplicateResume>.internal(
+  duplicateResume,
+  name: r'duplicateResumeProvider',
+  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+      ? null
+      : _$duplicateResumeHash,
+  dependencies: null,
+  allTransitiveDependencies: null,
+);
+
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
+typedef DuplicateResumeRef = ProviderRef<DuplicateResume>;
 String _$resumeListHash() => r'890aafe8ba27dda79dc935f88f69e59c1706cfc5';
 
 /// See also [resumeList].
@@ -140,7 +157,7 @@ final resumeListProvider =
 // ignore: unused_element
 typedef ResumeListRef = AutoDisposeStreamProviderRef<List<ResumeEntity>>;
 String _$resumeEditorNotifierHash() =>
-    r'6d19ef902edea1a49c458949054f527237428a1e';
+    r'cf15b6af69e0c854eb4fad6439eaa36c150ac858';
 
 /// Copied from Dart SDK
 class _SystemHash {

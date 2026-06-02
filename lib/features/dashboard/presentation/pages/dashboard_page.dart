@@ -262,20 +262,44 @@ class _ResumeCard extends StatelessWidget {
         trailing: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
+            // ATS shortcut — most frequent action, stays visible
             IconButton(
               icon: const Icon(Icons.analytics_outlined),
               tooltip: 'ATS Analysis',
               onPressed: onAnalyze,
             ),
-            IconButton(
-              icon: const Icon(Icons.copy_outlined),
-              tooltip: 'Duplicate',
-              onPressed: onDuplicate,
-            ),
-            IconButton(
-              icon: Icon(Icons.delete_outline, color: theme.colorScheme.error),
-              tooltip: 'Delete',
-              onPressed: onDelete,
+            // Overflow menu for less-frequent actions
+            PopupMenuButton<_CardAction>(
+              onSelected: (action) => switch (action) {
+                _CardAction.duplicate => onDuplicate(),
+                _CardAction.delete => onDelete(),
+              },
+              itemBuilder: (_) => [
+                const PopupMenuItem(
+                  value: _CardAction.duplicate,
+                  child: ListTile(
+                    leading: Icon(Icons.copy_outlined),
+                    title: Text('Duplicate'),
+                    contentPadding: EdgeInsets.zero,
+                    dense: true,
+                  ),
+                ),
+                PopupMenuItem(
+                  value: _CardAction.delete,
+                  child: ListTile(
+                    leading: Icon(
+                      Icons.delete_outline,
+                      color: theme.colorScheme.error,
+                    ),
+                    title: Text(
+                      'Delete',
+                      style: TextStyle(color: theme.colorScheme.error),
+                    ),
+                    contentPadding: EdgeInsets.zero,
+                    dense: true,
+                  ),
+                ),
+              ],
             ),
           ],
         ),
@@ -292,3 +316,5 @@ class _ResumeCard extends StatelessWidget {
     return '${dt.day}/${dt.month}/${dt.year}';
   }
 }
+
+enum _CardAction { duplicate, delete }
