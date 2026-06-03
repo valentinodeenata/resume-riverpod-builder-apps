@@ -29,11 +29,13 @@ class DashboardPage extends ConsumerWidget {
         actions: [
           IconButton(
             icon: const Icon(Icons.brightness_6),
+            tooltip: 'Toggle theme',
             onPressed: () => ref.read(themeNotifierProvider.notifier).toggleTheme(),
           ),
           IconButton(
-            icon: const Icon(Icons.logout),
-            onPressed: () => ref.read(authRepositoryProvider).signOut(),
+            icon: const Icon(Icons.account_circle_outlined),
+            tooltip: 'Profile',
+            onPressed: () => context.pushNamed(RouteNames.profile),
           ),
         ],
       ),

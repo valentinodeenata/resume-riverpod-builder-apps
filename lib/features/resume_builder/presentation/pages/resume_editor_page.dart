@@ -54,6 +54,14 @@ class _EditorScaffold extends ConsumerWidget {
             child: _SaveStatusChip(status: saveStatus),
           ),
           IconButton(
+            icon: const Icon(Icons.visibility_outlined),
+            tooltip: 'Preview',
+            onPressed: () => context.pushNamed(
+              RouteNames.resumePreview,
+              pathParameters: {'resumeId': resumeId},
+            ),
+          ),
+          IconButton(
             icon: const Icon(Icons.analytics_outlined),
             tooltip: 'ATS Analysis',
             onPressed: () => context.pushNamed(

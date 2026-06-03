@@ -10,7 +10,9 @@ import 'package:resume_riverpod_builder/features/auth/presentation/providers/aut
 import 'package:resume_riverpod_builder/features/ats_analyzer/presentation/pages/ats_analyzer_page.dart';
 import 'package:resume_riverpod_builder/features/dashboard/presentation/pages/dashboard_page.dart';
 import 'package:resume_riverpod_builder/features/export/presentation/pages/export_page.dart';
+import 'package:resume_riverpod_builder/features/profile/presentation/pages/profile_page.dart';
 import 'package:resume_riverpod_builder/features/resume_builder/presentation/pages/resume_editor_page.dart';
+import 'package:resume_riverpod_builder/features/resume_builder/presentation/pages/resume_preview_page.dart';
 
 part 'app_router.g.dart';
 
@@ -70,6 +72,18 @@ GoRouter appRouter(Ref ref) {
         builder: (_, state) => ExportPage(
           resumeId: state.pathParameters['resumeId']!,
         ),
+      ),
+      GoRoute(
+        path: '${RouteNames.resumePreview}/:resumeId',
+        name: RouteNames.resumePreview,
+        builder: (_, state) => ResumePreviewPage(
+          resumeId: state.pathParameters['resumeId']!,
+        ),
+      ),
+      GoRoute(
+        path: RouteNames.profile,
+        name: RouteNames.profile,
+        builder: (_, __) => const ProfilePage(),
       ),
     ],
     errorBuilder: (_, state) => Scaffold(

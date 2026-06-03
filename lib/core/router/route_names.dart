@@ -6,4 +6,6 @@ abstract final class RouteNames {
   static const String resumeEditor = '/resume-editor';
   static const String atsAnalyzer = '/ats-analyzer';
   static const String export = '/export';
+  static const String profile = '/profile';
+  static const String resumePreview = '/resume-preview';
 }
