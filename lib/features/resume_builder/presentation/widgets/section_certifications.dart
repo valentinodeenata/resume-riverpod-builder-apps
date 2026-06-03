@@ -5,6 +5,7 @@ import 'package:uuid/uuid.dart';
 import 'package:resume_riverpod_builder/features/resume_builder/domain/entities/resume_entity.dart';
 import 'package:resume_riverpod_builder/features/resume_builder/presentation/widgets/section_card.dart';
 import 'package:resume_riverpod_builder/shared/widgets/app_text_field.dart';
+import 'package:resume_riverpod_builder/shared/widgets/swipe_to_dismiss_item.dart';
 
 class SectionCertifications extends StatelessWidget {
   const SectionCertifications({
@@ -41,16 +42,21 @@ class SectionCertifications extends StatelessWidget {
                     .asMap()
                     .entries
                     .map(
-                      (e) => _CertificationItem(
+                      (e) => SwipeToDismissItem(
                         key: ValueKey(e.value.id),
-                        certification: e.value,
-                        onChanged: (updated) {
-                          final list = [...certifications];
-                          list[e.key] = updated;
-                          onChanged(list);
-                        },
-                        onDelete: () =>
-                            onChanged([...certifications]..removeAt(e.key)),
+                        dismissKey: ValueKey('dismiss_cert_${e.value.id}'),
+                        onDismissed: () => onChanged([...certifications]..removeAt(e.key)),
+                        child: _CertificationItem(
+                          key: ValueKey(e.value.id),
+                          certification: e.value,
+                          onChanged: (updated) {
+                            final list = [...certifications];
+                            list[e.key] = updated;
+                            onChanged(list);
+                          },
+                          onDelete: () =>
+                              onChanged([...certifications]..removeAt(e.key)),
+                        ),
                       ),
                     )
                     .toList(),

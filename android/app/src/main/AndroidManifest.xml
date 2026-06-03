@@ -7,7 +7,7 @@
         android:maxSdkVersion="32"/>
 
     <application
-        android:label="ats_resume_builder"
+        android:label="Resume Builder"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity

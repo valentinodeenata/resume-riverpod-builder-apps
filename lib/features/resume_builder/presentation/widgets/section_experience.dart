@@ -5,6 +5,7 @@ import 'package:uuid/uuid.dart';
 import 'package:resume_riverpod_builder/features/resume_builder/domain/entities/resume_entity.dart';
 import 'package:resume_riverpod_builder/features/resume_builder/presentation/widgets/section_card.dart';
 import 'package:resume_riverpod_builder/shared/widgets/app_text_field.dart';
+import 'package:resume_riverpod_builder/shared/widgets/swipe_to_dismiss_item.dart';
 
 class SectionExperience extends StatelessWidget {
   const SectionExperience({
@@ -42,16 +43,21 @@ class SectionExperience extends StatelessWidget {
                     .asMap()
                     .entries
                     .map(
-                      (e) => _ExperienceItem(
+                      (e) => SwipeToDismissItem(
                         key: ValueKey(e.value.id),
-                        experience: e.value,
-                        onChanged: (updated) {
-                          final list = [...experiences];
-                          list[e.key] = updated;
-                          onChanged(list);
-                        },
-                        onDelete: () =>
+                        dismissKey: ValueKey('dismiss_exp_${e.value.id}'),
+                        onDismissed: () =>
                             onChanged([...experiences]..removeAt(e.key)),
+                        child: _ExperienceItem(
+                          experience: e.value,
+                          onChanged: (updated) {
+                            final list = [...experiences];
+                            list[e.key] = updated;
+                            onChanged(list);
+                          },
+                          onDelete: () =>
+                              onChanged([...experiences]..removeAt(e.key)),
+                        ),
                       ),
                     )
                     .toList(),

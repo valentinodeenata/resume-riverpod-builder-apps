@@ -5,6 +5,7 @@ import 'package:uuid/uuid.dart';
 import 'package:resume_riverpod_builder/features/resume_builder/domain/entities/resume_entity.dart';
 import 'package:resume_riverpod_builder/features/resume_builder/presentation/widgets/section_card.dart';
 import 'package:resume_riverpod_builder/shared/widgets/app_text_field.dart';
+import 'package:resume_riverpod_builder/shared/widgets/swipe_to_dismiss_item.dart';
 
 class SectionSkills extends StatelessWidget {
   const SectionSkills({
@@ -33,14 +34,19 @@ class SectionSkills extends StatelessWidget {
                     .asMap()
                     .entries
                     .map(
-                      (e) => _SkillGroupItem(
-                        group: e.value,
-                        onChanged: (updated) {
-                          final list = [...skillGroups];
-                          list[e.key] = updated;
-                          onChanged(list);
-                        },
-                        onDelete: () => onChanged([...skillGroups]..removeAt(e.key)),
+                      (e) => SwipeToDismissItem(
+                        key: ValueKey(e.value.id),
+                        dismissKey: ValueKey('dismiss_skill_${e.value.id}'),
+                        onDismissed: () => onChanged([...skillGroups]..removeAt(e.key)),
+                        child: _SkillGroupItem(
+                          group: e.value,
+                          onChanged: (updated) {
+                            final list = [...skillGroups];
+                            list[e.key] = updated;
+                            onChanged(list);
+                          },
+                          onDelete: () => onChanged([...skillGroups]..removeAt(e.key)),
+                        ),
                       ),
                     )
                     .toList(),

@@ -5,6 +5,7 @@ import 'package:uuid/uuid.dart';
 import 'package:resume_riverpod_builder/features/resume_builder/domain/entities/resume_entity.dart';
 import 'package:resume_riverpod_builder/features/resume_builder/presentation/widgets/section_card.dart';
 import 'package:resume_riverpod_builder/shared/widgets/app_text_field.dart';
+import 'package:resume_riverpod_builder/shared/widgets/swipe_to_dismiss_item.dart';
 
 class SectionProjects extends StatelessWidget {
   const SectionProjects({
@@ -41,16 +42,21 @@ class SectionProjects extends StatelessWidget {
                     .asMap()
                     .entries
                     .map(
-                      (e) => _ProjectItem(
+                      (e) => SwipeToDismissItem(
                         key: ValueKey(e.value.id),
-                        project: e.value,
-                        onChanged: (updated) {
-                          final list = [...projects];
-                          list[e.key] = updated;
-                          onChanged(list);
-                        },
-                        onDelete: () =>
-                            onChanged([...projects]..removeAt(e.key)),
+                        dismissKey: ValueKey('dismiss_proj_${e.value.id}'),
+                        onDismissed: () => onChanged([...projects]..removeAt(e.key)),
+                        child: _ProjectItem(
+                          key: ValueKey(e.value.id),
+                          project: e.value,
+                          onChanged: (updated) {
+                            final list = [...projects];
+                            list[e.key] = updated;
+                            onChanged(list);
+                          },
+                          onDelete: () =>
+                              onChanged([...projects]..removeAt(e.key)),
+                        ),
                       ),
                     )
                     .toList(),

@@ -55,6 +55,9 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
 
+  # ─── App Icon Generator ───────────────────────────────────────────────────────
+  flutter_launcher_icons: ^0.14.3
+
   # ─── Code Generation ─────────────────────────────────────────────────────────
   build_runner: ^2.4.13
   freezed: ^2.5.7
@@ -82,3 +85,11 @@ flutter:
     - assets/images/
     - assets/icons/
     - assets/animations/
+
+flutter_launcher_icons:
+  android: true
+  ios: false
+  image_path: "assets/icons/app_icon.png"
+  min_sdk_android: 21
+  adaptive_icon_background: "#1565C0"
+  adaptive_icon_foreground: "assets/icons/app_icon_foreground.png"
