@@ -22,7 +22,7 @@ final generatePdfProvider = Provider<GeneratePdf>.internal(
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
 typedef GeneratePdfRef = ProviderRef<GeneratePdf>;
-String _$exportNotifierHash() => r'ce03550dc9fdb691675b5605ca1cfd6a93bcd941';
+String _$exportNotifierHash() => r'1740f5457dfae28d4266f16c85d4980325575014';
 
 /// Copied from Dart SDK
 class _SystemHash {

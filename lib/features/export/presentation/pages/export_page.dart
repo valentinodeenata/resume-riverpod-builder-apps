@@ -52,7 +52,12 @@ class _ExportScaffold extends ConsumerWidget {
       }
       if (next is ExportSuccess) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('PDF exported successfully!')),
+          const SnackBar(content: Text('PDF downloaded successfully!')),
+        );
+      }
+      if (next is ExportShared) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('PDF shared!')),
         );
       }
     });
@@ -136,6 +141,17 @@ class _ExportScaffold extends ConsumerWidget {
                   : () => ref
                       .read(exportNotifierProvider(resumeId).notifier)
                       .exportPdf(),
+            ),
+            const Gap(12),
+            AppButton.outlined(
+              label: 'Share PDF',
+              icon: const Icon(Icons.share_outlined),
+              isLoading: isLoading,
+              onPressed: isLoading
+                  ? null
+                  : () => ref
+                      .read(exportNotifierProvider(resumeId).notifier)
+                      .sharePdf(),
             ),
 
             // ── ATS format notes ─────────────────────────────────────
